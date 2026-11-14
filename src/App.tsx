@@ -169,9 +169,9 @@ export default function App() {
         </aside>
 
         <section className="editor-area">
-          <div className="editor-toolbar"><div className="crumb"><span>Meus projetos</span><b>/</b><strong>{projectName || 'Sem título'}</strong></div><div className="canvas-actions"><button title="Desfazer" onClick={undo}><Undo2 size={17}/></button><button title="Refazer" disabled><Redo2 size={17}/></button><i></i><button title="Excluir selecionado" onClick={removeSelected}><Trash2 size={17}/></button></div></div>
+          <div className="editor-toolbar"><div className="crumb"><span>Meus projetos</span><b>/</b><strong>{projectName || 'Sem título'}</strong></div><div className="canvas-actions"><button title="Desfazer — em preparação" disabled><Undo2 size={17}/></button><button title="Refazer — em preparação" disabled><Redo2 size={17}/></button><i></i><button title="Excluir selecionado" onClick={removeSelected}><Trash2 size={17}/></button></div></div>
           <div className="canvas-stage">
-            <div className="canvas-wrap" style={{width: canvasSize.width * zoom / 100, height: canvasSize.height * zoom / 100}}>
+            <div className="canvas-wrap" style={{width: canvasSize.width * zoom / 100, height: canvasSize.height * zoom / 100, ['--canvas-scale' as any]: zoom / 100}}>
               <canvas ref={canvasEl}/>
             </div>
             {layers.length === 0 && <div className="canvas-hint"><div className="hint-icon"><Upload size={22}/></div><b>Comece sua criação</b><p>Envie uma foto ou adicione um texto para montar sua arte.</p><button className="btn primary" onClick={() => fileRef.current?.click()}><ImagePlus size={16}/> Enviar primeira imagem</button></div>}
