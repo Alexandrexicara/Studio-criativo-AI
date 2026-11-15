@@ -7,6 +7,8 @@ import {
   Smartphone, RectangleHorizontal, X, Check
 } from 'lucide-react';
 
+const MAX_IMAGE_SIZE = 20 * 1024 * 1024; // 20 MB por imagem
+
 type LayerItem = { id: string; label: string; object: FabricObject };
 
 const PRESETS = [
@@ -83,7 +85,14 @@ export default function App() {
 
   const uploadImage = async (file?: File) => {
     const c = canvas(); if (!c || !file) return;
-    if (!file.type.startsWith('image/')) return;
+    if (!file.type.startsWith('image/')) {
+      window.alert('Selecione um arquivo de imagem válido (JPG, PNG ou WEBP).');
+      return;
+    }
+    if (file.size > MAX_IMAGE_SIZE) {
+      window.alert('Esta imagem ultrapassa o limite de 20 MB. Escolha uma imagem menor.');
+      return;
+    }
     const url = URL.createObjectURL(file);
     try {
       const image = await FabricImage.fromURL(url);
@@ -156,8 +165,8 @@ export default function App() {
           <div className="side-tabs"><button className={activeTab === 'design' ? 'active' : ''} onClick={() => setActiveTab('design')}><LayoutTemplate size={18}/> Design</button><button className={activeTab === 'layers' ? 'active' : ''} onClick={() => setActiveTab('layers')}><Layers3 size={18}/> Camadas</button></div>
           {activeTab === 'design' ? <div className="tool-panel">
             <div className="panel-heading">Adicionar elementos</div>
-            <button className="tool-card" onClick={() => fileRef.current?.click()}><span className="tool-icon violet"><ImagePlus/></span><span><b>Enviar imagem</b><small>Do celular ou computador</small></span><Plus size={16}/></button>
-            <input ref={fileRef} type="file" accept="image/*" hidden onChange={e => uploadImage(e.target.files?.[0])}/>
+            <button className="tool-card" onClick={() => fileRef.current?.click()}><span className="tool-icon violet"><ImagePlus/></span><span><b>Enviar imagem</b><small>JPG, PNG ou WEBP · até 20 MB</small></span><Plus size={16}/></button>
+            <input ref={fileRef} type="file" accept="image/*" hidden onChange={e => { uploadImage(e.target.files?.[0]); e.currentTarget.value = ''; }}/>
             <button className="tool-card" onClick={addText}><span className="tool-icon blue"><Type/></span><span><b>Adicionar texto</b><small>Títulos e legendas</small></span><Plus size={16}/></button>
             <div className="tool-grid"><button onClick={() => addShape('rect')}><Square/><span>Retângulo</span></button><button onClick={() => addShape('circle')}><CircleIcon/><span>Círculo</span></button></div>
             <div className="panel-heading space-top">Tamanho da arte</div>
@@ -174,7 +183,7 @@ export default function App() {
             <div className="canvas-wrap" style={{width: canvasSize.width * zoom / 100, height: canvasSize.height * zoom / 100, ['--canvas-scale' as any]: zoom / 100}}>
               <canvas ref={canvasEl}/>
             </div>
-            {layers.length === 0 && <div className="canvas-hint"><div className="hint-icon"><Upload size={22}/></div><b>Comece sua criação</b><p>Envie uma foto ou adicione um texto para montar sua arte.</p><button className="btn primary" onClick={() => fileRef.current?.click()}><ImagePlus size={16}/> Enviar primeira imagem</button></div>}
+            {layers.length === 0 && <div className="canvas-hint"><div className="hint-icon"><Upload size={22}/></div><b>Comece sua criação</b><p>Envie uma foto de até 20 MB ou adicione um texto para montar sua arte.</p><button className="btn primary" onClick={() => fileRef.current?.click()}><ImagePlus size={16}/> Enviar primeira imagem</button></div>}
           </div>
           <div className="bottom-toolbar"><div><Monitor size={15}/><span>{canvasSize.width} × {canvasSize.height} px</span></div><div className="zoom-control"><button onClick={() => setZoom(z => Math.max(20,z-5))}>−</button><span>{zoom}%</span><button onClick={() => setZoom(z => Math.min(100,z+5))}>+</button></div></div>
         </section>
