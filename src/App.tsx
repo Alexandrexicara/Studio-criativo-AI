@@ -125,7 +125,7 @@ export default function App() {
   const updateSelected = (props: Record<string, unknown>) => {
     const c = canvas(); const obj = c?.getActiveObject();
     if (!c || !obj) return;
-    obj.set(props as any); obj.setCoords(); c.requestRenderAll(); refresh();
+    obj.set(props as any); obj.setCoords(); c.requestRenderAll(); refresh(); snapshot();
   };
   const duplicateSelected = () => {
     const c = canvas(); const obj = c?.getActiveObject();
